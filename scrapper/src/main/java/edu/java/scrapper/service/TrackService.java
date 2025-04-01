@@ -7,7 +7,7 @@ import java.util.Map;
 
 @Service
 public class TrackService {
-    public Map<Long, List<String>> tracks;
+    private final Map<Long, List<String>> tracks;
 
     public TrackService() {
         tracks = new HashMap<>();
@@ -20,20 +20,16 @@ public class TrackService {
         tracks.get(chatId).add(track);
     }
 
-    public boolean removeTrack(Long chatId, String track) {
-        if (tracks.containsKey(chatId)) {
-            if (tracks.get(chatId).contains(track)) {
-                tracks.get(chatId).remove(track);
-                return true;
-            }
+    public String removeTrack(Long chatId, Long trackId) {
+        if (tracks.containsKey(chatId) && trackId < tracks.get(chatId).size()) {
+            String data = tracks.get(chatId).get(Math.toIntExact(trackId));
+            tracks.get(chatId).remove(Math.toIntExact(trackId));
+            return data;
         }
-        return false;
+        return "";
     }
 
     public List<String> getTracks(Long chatId) {
-        if (!tracks.containsKey(chatId)) {
-            return new ArrayList<>();
-        }
-        return tracks.get(chatId);
+        return tracks.getOrDefault(chatId, new ArrayList<>());
     }
 }

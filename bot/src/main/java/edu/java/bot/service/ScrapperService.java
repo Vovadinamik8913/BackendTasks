@@ -5,12 +5,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ScrapperService {
@@ -30,6 +33,7 @@ public class ScrapperService {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("chatId", String.valueOf(chatId));
         params.add("service", url);
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
@@ -46,12 +50,13 @@ public class ScrapperService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        MultiValueMap<String, Long> params = new LinkedMultiValueMap<>();
-        params.add("service", index);
-        HttpEntity<MultiValueMap<String, Long>> request = new HttpEntity<>(params, headers);
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("chatId", String.valueOf(chatId));
+        params.add("service", String.valueOf(index));
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
-            scrapperBaseUrl + "/untrack",
+            scrapperBaseUrl + "/untrack?chatId=" + chatId + "&service=" + index,
             HttpMethod.DELETE,
             request,
             String.class
@@ -62,7 +67,7 @@ public class ScrapperService {
 
     public String start(long chatId) {
         ResponseEntity<String> response = restTemplate.getForEntity(
-            scrapperBaseUrl + "/start",
+            scrapperBaseUrl + "/start?chatId=" + chatId,
             String.class
         );
 
@@ -70,11 +75,19 @@ public class ScrapperService {
     }
 
     public String tracksList(long chatId) {
-        ResponseEntity<String> response = restTemplate.getForEntity(
-            scrapperBaseUrl + "/list",
-            String.class
+        ResponseEntity<?> response = restTemplate.getForEntity(
+            scrapperBaseUrl + "/list?chatId=" + chatId,
+            Object.class
         );
 
-        return response.getBody();
+        if (response.getStatusCode() == HttpStatus.BAD_REQUEST) {
+           return (String) response.getBody();
+        }
+        List<String> tracks = (List<String>) response.getBody();
+        StringBuilder res = new StringBuilder();
+        for (String track : tracks) {
+            res.append(track).append("\n");
+        }
+        return res.toString();
     }
 }
