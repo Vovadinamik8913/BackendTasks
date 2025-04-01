@@ -1,5 +1,6 @@
 app:
-  telegram-token: unset
+  telegram-token: token
+  scrapper-base-url: http://localhost:8080
 
 spring:
   application:
@@ -11,4 +12,6 @@ server:
   port: 8090
 
 logging:
+  level:
+    root=DEBUG:
   config: classpath:log4j2-plain.xml

@@ -25,6 +25,9 @@ public class UserMessageProcessor implements Processor {
                 return command.handle(update);
             }
         }
+        if (update.message() == null) {
+            return null;
+        }
         return new SendMessage(update.message().chat().id(), "Неизвестная команда! Используйте /help");
     }
 }
