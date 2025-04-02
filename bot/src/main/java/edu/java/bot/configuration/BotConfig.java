@@ -21,13 +21,11 @@ public class BotConfig {
 
     public BotConfig(ChatStateHolder stateHolder, ScrapperService scrapperService) {
         commands = new ArrayList<>();
-        HelpCommand helpCommand = new HelpCommand();
         commands.add(new TrackCommand(stateHolder, scrapperService));
-        commands.add(helpCommand);
+        commands.add(new HelpCommand(commands));
         commands.add(new UntrackCommand(stateHolder, scrapperService));
         commands.add(new ListCommand(scrapperService));
         commands.add(new StartCommand(scrapperService));
-        helpCommand.setCommands(commands);
     }
     @Bean
     public Processor userMessageProcessor() {

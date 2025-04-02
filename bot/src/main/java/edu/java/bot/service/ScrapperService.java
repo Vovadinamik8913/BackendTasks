@@ -81,7 +81,7 @@ public class ScrapperService {
         );
 
         if (response.getStatusCode() == HttpStatus.BAD_REQUEST) {
-           return (String) response.getBody();
+           return "пока что ничего не отслеживается";
         }
         List<String> tracks = (List<String>) response.getBody();
         StringBuilder res = new StringBuilder();

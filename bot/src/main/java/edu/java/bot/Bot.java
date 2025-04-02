@@ -16,8 +16,10 @@ public class Bot implements AutoCloseable, UpdatesListener {
     private final TelegramBot bot;
     private final Processor processor;
 
-    public Bot(ApplicationConfig properties,
-        Processor processor) {
+    public Bot(
+        ApplicationConfig properties,
+        Processor processor
+    ) {
         bot = new TelegramBot(properties.telegramToken());
         this.processor = processor;
         setupCommandsMenu();
