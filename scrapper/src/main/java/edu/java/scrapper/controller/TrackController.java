@@ -1,5 +1,7 @@
 package edu.java.scrapper.controller;
 
+import edu.java.scrapper.model.Link;
+import edu.java.scrapper.model.LinkType;
 import edu.java.scrapper.service.TrackService;
 import edu.java.scrapper.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
+import edu.java.scrapper.model.Parser;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,7 +29,12 @@ public class TrackController {
         if (!userService.isUserRegistered(chatId)) {
             return ResponseEntity.notFound().build();
         }
-        trackService.addTrack(chatId, serviceUrl);
+        LinkType type = LinkType.getByUrl(serviceUrl);
+        if (type == null) {
+            return ResponseEntity.notFound().build();
+        }
+        Link link = type.getParser().parse(serviceUrl);
+        trackService.addTrack(chatId, link);
         return ResponseEntity.ok("Сервис " + serviceUrl + " добавлен в отслеживание");
     }
 
@@ -38,11 +46,11 @@ public class TrackController {
         if (!userService.isUserRegistered(chatId)) {
             return ResponseEntity.notFound().build();
         }
-        String track = trackService.removeTrack(chatId, serviceIndex - 1);
-        if (track.isEmpty()) {
+        Link link = trackService.removeTrack(chatId, serviceIndex - 1);
+        if (link == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok("Сервис " + track + " больше не отслеживается");
+        return ResponseEntity.ok("Сервис " + link.getHref() + " больше не отслеживается");
     }
 
     @GetMapping("/list")
@@ -52,7 +60,7 @@ public class TrackController {
         if (!userService.isUserRegistered(chatId)) {
             return ResponseEntity.notFound().build();
         }
-        List<String> tracks = trackService.getTracks(chatId);
+        List<Link> tracks = trackService.getTracks(chatId);
         if (tracks.isEmpty()) {
             return ResponseEntity.badRequest().body(new ArrayList<>());
         }
