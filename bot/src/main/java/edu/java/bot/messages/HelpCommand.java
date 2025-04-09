@@ -8,7 +8,9 @@ public class HelpCommand implements Command {
     private final List<Command> commands;
 
     public HelpCommand(List<Command> commands) {
-        this.commands = commands;
+        this.commands = commands.stream()
+            .filter(command -> !(command instanceof UpdateCommand))
+            .toList();
     }
 
     @Override
