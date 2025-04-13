@@ -12,8 +12,59 @@ services:
     networks:
       - backend
 
+  shared:
+    image: maven:3.9.9
+    volumes:
+      - maven-repo:/root/.m2
+      - .:/usr/src
+    working_dir: /usr/src
+    command: mvn clean install -pl shared -am -DskipTests
+    environment:
+      MAVEN_OPTS: -Dmaven.repo.local=/root/.m2/repository
+
+  builder:
+    image: maven:3.9.9
+    volumes:
+      - maven-repo:/root/.m2
+      - .:/usr/src
+    working_dir: /usr/src
+    command: mvn install -DskipTests
+    environment:
+      MAVEN_OPTS: -Dmaven.repo.local=/root/.m2/repository
+
+  bot:
+    build:
+      context: .
+      dockerfile: bot/Dockerfile
+    ports:
+      - "8081:8090"
+    depends_on:
+      - shared
+    networks:
+      - backend
+    environment:
+      BOT_TOKEN: "M"
+      SCRAPPER_BASE_URL: "http://scrapper:8080"
+
+  scrapper:
+    build:
+      context: .
+      dockerfile: scrapper/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - shared
+    networks:
+      - backend
+    environment:
+      SCHEDULER_INTERVAL: "10s"
+      BOT_URL: "http://bot:8090"
+
 volumes:
-  postgresql: { }
+  postgresql:
+  maven-repo:
 
 networks:
-  backend: { }
+  backend:
+    driver: bridge
+

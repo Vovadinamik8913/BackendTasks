@@ -64,6 +64,6 @@ public class TrackController {
         if (tracks.isEmpty()) {
             return ResponseEntity.badRequest().body(new ArrayList<>());
         }
-        return ResponseEntity.ok(tracks);
+        return ResponseEntity.ok(tracks.stream().map(Link::getHref));
     }
 }

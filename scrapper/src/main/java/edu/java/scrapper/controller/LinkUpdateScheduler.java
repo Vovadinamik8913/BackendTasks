@@ -1,6 +1,6 @@
 package edu.java.scrapper.controller;
 
-import edu.java.bot.components.LinkUpdate;
+import edu.java.shared.LinkUpdate;
 import edu.java.scrapper.model.LinkType;
 import edu.java.scrapper.model.github.GitClient;
 import edu.java.scrapper.model.github.GitLink;

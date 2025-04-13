@@ -1,6 +1,6 @@
 package edu.java.scrapper.service;
 
-import edu.java.bot.components.LinkUpdate;
+import edu.java.shared.LinkUpdate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.HttpExchange;

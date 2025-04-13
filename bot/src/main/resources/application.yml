@@ -1,6 +1,6 @@
 app:
-  telegram-token:
-  scrapper-base-url: http://localhost:8080
+  telegram-token: ${BOT_TOKEN}
+  scrapper-base-url: ${SCRAPPER_BASE_URL}
 
 spring:
   application:
@@ -18,12 +18,6 @@ logging:
 
 
 springdoc:
-  info:
-    title: Bot API
-    version: 1.0.0
-    contact:
-      name: Vladimir
-      url: https://github.com
   swagger-ui:
     path: /swagger-ui
     use-root-path: true

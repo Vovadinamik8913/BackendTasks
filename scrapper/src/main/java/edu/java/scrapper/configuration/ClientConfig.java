@@ -2,6 +2,7 @@ package edu.java.scrapper.configuration;
 
 import edu.java.scrapper.model.github.GitClient;
 import edu.java.scrapper.service.BotService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
@@ -16,6 +17,9 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 @Configuration
 public class ClientConfig {
+    @Value("${app.bot-url}")
+    private String botUrl;
+
     @Bean
     public GitClient gitClient() {
         WebClient webClient = WebClient.builder()
@@ -34,10 +38,10 @@ public class ClientConfig {
     @Bean
     public BotService gitBot() {
         RestClient restClient = RestClient.builder()
-            .baseUrl("http://localhost:8090") // Use HTTP if not HTTPS
+            .baseUrl(botUrl)
             .messageConverters(converters -> {
                 converters.add(new MappingJackson2HttpMessageConverter());
-                converters.add(new StringHttpMessageConverter()); // Add plain text support
+                converters.add(new StringHttpMessageConverter());
             })
             .build();
 
