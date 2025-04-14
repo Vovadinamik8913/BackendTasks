@@ -1,8 +1,8 @@
 package edu.java.scrapper.controller;
 
-import edu.java.scrapper.model.Link;
-import edu.java.scrapper.model.LinkType;
-import edu.java.scrapper.service.TrackService;
+import edu.java.scrapper.dto.LinkDto;
+import edu.java.scrapper.dto.UserDto;
+import edu.java.scrapper.service.LinkService;
 import edu.java.scrapper.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +13,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
-import edu.java.scrapper.model.Parser;
 
 @RestController
 @RequiredArgsConstructor
 public class TrackController {
-    private final TrackService trackService;
+    private final LinkService linkService;
     private final UserService userService;
 
     @PostMapping("/track")
@@ -26,44 +25,42 @@ public class TrackController {
         @RequestParam("chatId") Long chatId,
         @RequestParam("service") String serviceUrl
     ) {
-        if (!userService.isUserRegistered(chatId)) {
+        UserDto user = userService.login(chatId);
+        if (user == null) {
             return ResponseEntity.notFound().build();
         }
-        LinkType type = LinkType.getByUrl(serviceUrl);
-        if (type == null) {
-            return ResponseEntity.notFound().build();
-        }
-        Link link = type.getParser().parse(serviceUrl);
-        trackService.addTrack(chatId, link);
+        linkService.add(user.getId(), serviceUrl);
         return ResponseEntity.ok("Сервис " + serviceUrl + " добавлен в отслеживание");
     }
 
     @DeleteMapping("/untrack")
     public ResponseEntity<?> removeTrack(
         @RequestParam("chatId") Long chatId,
-        @RequestParam("service") Long serviceIndex
+        @RequestParam("service") String serviceUrl
     ) {
-        if (!userService.isUserRegistered(chatId)) {
+        UserDto user = userService.login(chatId);
+        if (user == null) {
             return ResponseEntity.notFound().build();
         }
-        Link link = trackService.removeTrack(chatId, serviceIndex - 1);
-        if (link == null) {
+        boolean res = linkService.remove(user.getId(), serviceUrl);
+        if (!res) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok("Сервис " + link.getHref() + " больше не отслеживается");
+        return ResponseEntity.ok("Сервис " + serviceUrl + " больше не отслеживается");
     }
 
     @GetMapping("/list")
     public ResponseEntity<?> getTracks(
         @RequestParam("chatId") Long chatId
     ) {
-        if (!userService.isUserRegistered(chatId)) {
+        UserDto user = userService.login(chatId);
+        if (user == null) {
             return ResponseEntity.notFound().build();
         }
-        List<Link> tracks = trackService.getTracks(chatId);
+        List<LinkDto> tracks = (List<LinkDto>) linkService.listByChatId(user.getId());
         if (tracks.isEmpty()) {
             return ResponseEntity.badRequest().body(new ArrayList<>());
         }
-        return ResponseEntity.ok(tracks.stream().map(Link::getHref));
+        return ResponseEntity.ok(tracks.stream().map(LinkDto::getUrl));
     }
 }

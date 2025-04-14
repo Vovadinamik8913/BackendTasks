@@ -46,17 +46,17 @@ public class ScrapperService {
         return response.getBody();
     }
 
-    public String removeLink(long chatId, Long index) {
+    public String removeLink(long chatId, String url) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("chatId", String.valueOf(chatId));
-        params.add("service", String.valueOf(index));
+        params.add("service", url);
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
-            scrapperBaseUrl + "/untrack?chatId=" + chatId + "&service=" + index,
+            scrapperBaseUrl + "/untrack?chatId=" + chatId + "&service=" + url,
             HttpMethod.DELETE,
             request,
             String.class

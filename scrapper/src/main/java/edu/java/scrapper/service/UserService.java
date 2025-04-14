@@ -1,21 +1,11 @@
 package edu.java.scrapper.service;
 
+import edu.java.scrapper.dto.UserDto;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
-public class UserService {
-    private final List<Long> chats;
-    public UserService() {
-        chats = new ArrayList<>();
-    }
-
-    public void addUser(Long chatId) {
-        chats.add(chatId);
-    }
-
-    public boolean isUserRegistered(Long chatId) {
-        return chats.contains(chatId);
-    }
+public interface UserService {
+    void register(long tgChatId);
+    void unregister(long tgChatId);
+    UserDto login(long tgChatId);
 }

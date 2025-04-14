@@ -29,7 +29,7 @@ public class UntrackCommand implements Command{
 
     @Override
     public String description() {
-        return "untrack url(number in list)";
+        return "untrack url";
     }
 
     @Override
@@ -46,7 +46,7 @@ public class UntrackCommand implements Command{
             stateHolder.clearState(chatId);
 
             try {
-                String response = scrapperService.removeLink(chatId, Long.valueOf(url));
+                String response = scrapperService.removeLink(chatId, url);
                 return new SendMessage(chatId, response);
             } catch (Exception e) {
                 return new SendMessage(chatId, "Failed to remove URL: " + e.getMessage());

@@ -16,7 +16,7 @@ public class RegistrationController {
     public ResponseEntity<?> addTrack(
         @RequestParam("chatId") Long chatId
     ) {
-        userService.addUser(chatId);
+        userService.register(chatId);
         return ResponseEntity.ok("Вы зарегистрированы!! Добро пожаловать");
     }
 }

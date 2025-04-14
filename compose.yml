@@ -12,6 +12,22 @@ services:
     networks:
       - backend
 
+  liquibase-migrations:
+    image: liquibase/liquibase:4.25
+    depends_on:
+      - postgresql
+    command:
+      - --changelog-file=master.xml
+      - --driver=org.postgresql.Driver
+      - --url=jdbc:postgresql://postgresql:5432/scrapper
+      - --username=postgres
+      - --password=postgres
+      - update
+    volumes:
+      - ./migrations:/liquibase/changelog
+    networks:
+      - backend
+
   shared:
     image: maven:3.9.9
     volumes:
@@ -19,16 +35,6 @@ services:
       - .:/usr/src
     working_dir: /usr/src
     command: mvn clean install -pl shared -am -DskipTests
-    environment:
-      MAVEN_OPTS: -Dmaven.repo.local=/root/.m2/repository
-
-  builder:
-    image: maven:3.9.9
-    volumes:
-      - maven-repo:/root/.m2
-      - .:/usr/src
-    working_dir: /usr/src
-    command: mvn install -DskipTests
     environment:
       MAVEN_OPTS: -Dmaven.repo.local=/root/.m2/repository
 
@@ -43,8 +49,9 @@ services:
     networks:
       - backend
     environment:
-      BOT_TOKEN: "M"
+      BOT_TOKEN: ""
       SCRAPPER_BASE_URL: "http://scrapper:8080"
+
 
   scrapper:
     build:
@@ -59,6 +66,9 @@ services:
     environment:
       SCHEDULER_INTERVAL: "10s"
       BOT_URL: "http://bot:8090"
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_URL: "jdbc:postgresql://postgresql:5432/scrapper"
 
 volumes:
   postgresql:
