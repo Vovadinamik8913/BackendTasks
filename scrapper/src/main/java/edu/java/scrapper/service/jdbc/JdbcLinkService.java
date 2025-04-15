@@ -1,14 +1,15 @@
 package edu.java.scrapper.service.jdbc;
 
-import edu.java.scrapper.domain.JdbcLinkRepository;
-import edu.java.scrapper.dto.LinkDto;
+import edu.java.scrapper.domain.jdbc.JdbcLinkRepository;
+import edu.java.scrapper.dto.Track;
+import edu.java.scrapper.dto.jdbc.JdbcLink;
 import edu.java.scrapper.service.LinkService;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
-import java.net.URI;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.util.Collection;
+import java.util.List;
 
 @AllArgsConstructor
 public class JdbcLinkService implements LinkService {
@@ -17,11 +18,12 @@ public class JdbcLinkService implements LinkService {
     private final JdbcLinkRepository jdbcLinkRepository;
 
     @Override
-    public LinkDto add(long userId, String url) {
-        return jdbcLinkRepository.add(
-            userId,
+    public Track add(long chatId, String url) {
+        JdbcLink linkDto = jdbcLinkRepository.add(
+            chatId,
             url,
             Timestamp.from(OffsetDateTime.now().toInstant()));
+        return new Track(linkDto.getUrl(), linkDto.getChatId());
     }
 
     @Override
@@ -30,13 +32,15 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
-    public Collection<LinkDto> listAll() {
-        return jdbcLinkRepository.findAll();
+    public Collection<Track> listAll() {
+        List<JdbcLink> list = jdbcLinkRepository.findAll();
+        return list.stream().map(l -> new Track(l.getUrl(), l.getChatId())).toList();
     }
 
     @Override
-    public Collection<LinkDto> listByChatId(long tgChatId) {
-        return jdbcLinkRepository.findAll(tgChatId);
+    public Collection<Track> listByChatId(long tgChatId) {
+        List<JdbcLink> list = jdbcLinkRepository.findAll(tgChatId);
+        return list.stream().map(l -> new Track(l.getUrl(), l.getChatId())).toList();
     }
 
     @Override

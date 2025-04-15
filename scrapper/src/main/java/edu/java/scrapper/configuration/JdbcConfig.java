@@ -11,7 +11,6 @@ import javax.sql.DataSource;
 
 @Configuration
 public class JdbcConfig {
-
     @Bean
     public DataSource dataSource(
         @Value("${spring.datasource.url}") String url,

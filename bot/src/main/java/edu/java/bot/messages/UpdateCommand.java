@@ -4,7 +4,6 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.service.ChatState;
 import edu.java.bot.service.ChatStateHolder;
-import edu.java.bot.service.ScrapperService;
 
 public class UpdateCommand implements Command {
     private final ChatStateHolder stateHolder;

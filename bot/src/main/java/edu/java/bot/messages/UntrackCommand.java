@@ -4,22 +4,15 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.service.ChatState;
 import edu.java.bot.service.ChatStateHolder;
-import edu.java.bot.service.ScrapperService;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
+import edu.java.bot.service.ScrapperClient;
 
 public class UntrackCommand implements Command{
     private final ChatStateHolder stateHolder;
-    private final ScrapperService scrapperService;
+    private final ScrapperClient scrapperClient;
 
-    public UntrackCommand(ChatStateHolder stateHolder, ScrapperService scrapperService) {
+    public UntrackCommand(ChatStateHolder stateHolder, ScrapperClient scrapperClient) {
         this.stateHolder = stateHolder;
-        this.scrapperService = scrapperService;
+        this.scrapperClient = scrapperClient;
     }
 
     @Override
@@ -46,7 +39,7 @@ public class UntrackCommand implements Command{
             stateHolder.clearState(chatId);
 
             try {
-                String response = scrapperService.removeLink(chatId, url);
+                String response = scrapperClient.removeLink(chatId, url);
                 return new SendMessage(chatId, response);
             } catch (Exception e) {
                 return new SendMessage(chatId, "Failed to remove URL: " + e.getMessage());

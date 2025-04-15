@@ -2,13 +2,13 @@ package edu.java.bot.messages;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.service.ScrapperService;
+import edu.java.bot.service.ScrapperClient;
 
 public class ListCommand implements Command {
-    private final ScrapperService scrapperService;
+    private final ScrapperClient scrapperClient;
 
-    public ListCommand(ScrapperService scrapperService) {
-        this.scrapperService = scrapperService;
+    public ListCommand(ScrapperClient scrapperClient) {
+        this.scrapperClient = scrapperClient;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class ListCommand implements Command {
     public SendMessage handle(Update update) {
         long chatId = update.message().chat().id();
         try {
-            String result = scrapperService.tracksList(chatId);
+            String result = scrapperClient.tracksList(chatId);
             return new SendMessage(chatId, result);
         } catch (Exception e) {
             return new SendMessage(chatId, e.getMessage());

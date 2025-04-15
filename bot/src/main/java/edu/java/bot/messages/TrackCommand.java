@@ -4,16 +4,15 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.service.ChatState;
 import edu.java.bot.service.ChatStateHolder;
-import edu.java.bot.service.ScrapperService;
-import org.springframework.stereotype.Component;
+import edu.java.bot.service.ScrapperClient;
 
 public class TrackCommand implements Command {
     private final ChatStateHolder stateHolder;
-    private final ScrapperService scrapperService;
+    private final ScrapperClient scrapperClient;
 
-    public TrackCommand(ChatStateHolder stateHolder, ScrapperService scrapperService) {
+    public TrackCommand(ChatStateHolder stateHolder, ScrapperClient scrapperClient) {
         this.stateHolder = stateHolder;
-        this.scrapperService = scrapperService;
+        this.scrapperClient = scrapperClient;
     }
 
     @Override
@@ -40,7 +39,7 @@ public class TrackCommand implements Command {
             stateHolder.clearState(chatId);
 
             try {
-                String response = scrapperService.addLink(chatId, url);
+                String response = scrapperClient.addLink(chatId, url);
                 return new SendMessage(chatId, response);
             } catch (Exception e) {
                 return new SendMessage(chatId, "Failed to add URL: " + e.getMessage());

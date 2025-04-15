@@ -1,8 +1,9 @@
 package edu.java.scrapper.service.jdbc;
 
-import edu.java.scrapper.domain.JdbcLinkRepository;
-import edu.java.scrapper.domain.JdbcUserRepository;
-import edu.java.scrapper.dto.UserDto;
+import edu.java.scrapper.domain.jdbc.JdbcLinkRepository;
+import edu.java.scrapper.domain.jdbc.JdbcUserRepository;
+import edu.java.scrapper.dto.User;
+import edu.java.scrapper.dto.jdbc.JdbcUser;
 import edu.java.scrapper.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,7 +26,11 @@ public class JdbcUserService implements UserService {
     }
 
     @Override
-    public UserDto login(long tgChatId) {
-        return jdbcUserRepository.findById(tgChatId);
+    public User login(long tgChatId) {
+        JdbcUser userDto = jdbcUserRepository.findById(tgChatId);
+        if (userDto == null) {
+            return null;
+        }
+        return new User(userDto.getId(), userDto.getChatId());
     }
 }

@@ -1,7 +1,6 @@
 package edu.java.bot.service;
 
 import edu.java.bot.configuration.ApplicationConfig;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,14 +12,13 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import java.util.List;
-import java.util.Objects;
 
 @Service
-public class ScrapperService {
+public class ScrapperClient {
     private final RestTemplate restTemplate;
     private final String scrapperBaseUrl;
 
-    public ScrapperService(
+    public ScrapperClient(
         RestTemplate restTemplate,
         ApplicationConfig applicationConfig
     ) {

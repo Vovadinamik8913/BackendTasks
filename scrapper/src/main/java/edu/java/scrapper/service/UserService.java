@@ -1,11 +1,10 @@
 package edu.java.scrapper.service;
 
-import edu.java.scrapper.dto.UserDto;
-import org.springframework.stereotype.Service;
+import edu.java.scrapper.dto.User;
+import jakarta.annotation.Nullable;
 
-@Service
 public interface UserService {
     void register(long tgChatId);
     void unregister(long tgChatId);
-    UserDto login(long tgChatId);
+    @Nullable User login(long tgChatId);
 }

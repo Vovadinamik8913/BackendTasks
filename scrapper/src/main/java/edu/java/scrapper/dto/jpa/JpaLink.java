@@ -1,0 +1,36 @@
+package edu.java.scrapper.dto.jpa;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import java.time.OffsetDateTime;
+
+@Entity
+@Table(name = "links")
+@Getter
+@NoArgsConstructor
+public class JpaLink {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(name = "url", nullable = false)
+    private String url;
+    @Column(name = "updated_at", nullable = false)
+    private OffsetDateTime updatedAt;
+    @ManyToOne
+    @JoinColumn(name = "chat_id", referencedColumnName = "chat_id", nullable = false)
+    private JpaUser user;
+
+    public JpaLink(String url, JpaUser user) {
+        this.url = url;
+        this.updatedAt = OffsetDateTime.now();
+        this.user = user;
+    }
+}

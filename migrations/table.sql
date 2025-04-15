@@ -12,5 +12,5 @@ create table if not exists links (
     updated_at timestamp with time zone not null,
     chat_id bigint not null,
     primary key (id),
-    foreign key (chat_id) references chats(id)
+    foreign key (chat_id) references chats(chat_id)
 );

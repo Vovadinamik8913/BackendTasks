@@ -1,6 +1,6 @@
-package edu.java.scrapper.domain;
+package edu.java.scrapper.domain.jdbc;
 
-import edu.java.scrapper.dto.UserDto;
+import edu.java.scrapper.dto.jdbc.JdbcUser;
 import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,25 +13,25 @@ import java.util.List;
 @AllArgsConstructor
 public class JdbcUserRepository {
     private final JdbcTemplate jdbcTemplate;
-    private final RowMapper<UserDto> userRowMapper = (rs, rowNum) ->
-        new UserDto(
+    private final RowMapper<JdbcUser> userRowMapper = (rs, rowNum) ->
+        new JdbcUser(
           rs.getLong("id"),
           rs.getLong("chat_id")
         );
 
-    public List<UserDto> findAll() {
+    public List<JdbcUser> findAll() {
         return jdbcTemplate.query("select * from chats;", userRowMapper);
     }
 
     @Nullable
-    public UserDto findById(Long chatId) {
+    public JdbcUser findById(Long chatId) {
         return jdbcTemplate.queryForObject(
             "select * from chats where chat_id = ?", userRowMapper, chatId
         );
     }
 
     @Transactional
-    public UserDto add(long chatId) {
+    public JdbcUser add(long chatId) {
         String sql = "insert into chats (chat_id) values (?) returning *;";
         return jdbcTemplate.queryForObject(sql, userRowMapper, chatId);
     }

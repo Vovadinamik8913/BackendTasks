@@ -2,7 +2,8 @@ package edu.java.scrapper.domain;
 
 import edu.java.scrapper.IntegrationTest;
 import edu.java.scrapper.configuration.JdbcConfig;
-import edu.java.scrapper.dto.UserDto;
+import edu.java.scrapper.domain.jdbc.JdbcUserRepository;
+import edu.java.scrapper.dto.jdbc.JdbcUser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,8 @@ class UserRepositoryTest extends IntegrationTest {
     @Transactional
     @Rollback
     void addTest() {
-        UserDto user1 = jdbcUserRepository.add(123);
-        UserDto user2 = jdbcUserRepository.add(321);
+        JdbcUser user1 = jdbcUserRepository.add(123);
+        JdbcUser user2 = jdbcUserRepository.add(321);
         Assertions.assertTrue(user2.getId() != 0L);
     }
 
@@ -36,7 +37,7 @@ class UserRepositoryTest extends IntegrationTest {
     @Transactional
     @Rollback
     void removeTest() {
-        UserDto user1 = jdbcUserRepository.add(123);
+        JdbcUser user1 = jdbcUserRepository.add(123);
         Assertions.assertTrue(jdbcUserRepository.remove(123L));
     }
 }

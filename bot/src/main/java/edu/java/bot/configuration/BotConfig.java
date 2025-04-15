@@ -10,7 +10,7 @@ import edu.java.bot.messages.TrackCommand;
 import edu.java.bot.messages.UntrackCommand;
 import edu.java.bot.messages.UpdateCommand;
 import edu.java.bot.service.ChatStateHolder;
-import edu.java.bot.service.ScrapperService;
+import edu.java.bot.service.ScrapperClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import java.util.ArrayList;
@@ -20,13 +20,13 @@ import java.util.List;
 public class BotConfig {
     private final List<Command> commands;
 
-    public BotConfig(ChatStateHolder stateHolder, ScrapperService scrapperService) {
+    public BotConfig(ChatStateHolder stateHolder, ScrapperClient scrapperClient) {
         commands = new ArrayList<>();
-        commands.add(new TrackCommand(stateHolder, scrapperService));
+        commands.add(new TrackCommand(stateHolder, scrapperClient));
         commands.add(new UpdateCommand(stateHolder));
-        commands.add(new UntrackCommand(stateHolder, scrapperService));
-        commands.add(new ListCommand(scrapperService));
-        commands.add(new StartCommand(scrapperService));
+        commands.add(new UntrackCommand(stateHolder, scrapperClient));
+        commands.add(new ListCommand(scrapperClient));
+        commands.add(new StartCommand(scrapperClient));
         commands.add(new HelpCommand(commands));
     }
     @Bean

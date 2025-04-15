@@ -11,9 +11,6 @@ import edu.java.scrapper.service.BotService;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import java.net.URI;
-import java.time.Duration;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 
 @Component
@@ -41,8 +38,8 @@ public class LinkUpdateScheduler {
                     trace.setViewedAt(repository.getUpdatedAt());
                     bot.update(new LinkUpdate(0L, repository.getHtmlUrl(),
                         "changed at" + repository.getUpdatedAt(), id));
-                    linkService.update(link.getChatId(), link.getUrl());
                 }
+                linkService.update(link.getChatId(), link.getUrl());
             }
         }
     }

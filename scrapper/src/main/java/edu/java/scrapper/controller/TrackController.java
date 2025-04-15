@@ -1,7 +1,7 @@
 package edu.java.scrapper.controller;
 
-import edu.java.scrapper.dto.LinkDto;
-import edu.java.scrapper.dto.UserDto;
+import edu.java.scrapper.dto.Track;
+import edu.java.scrapper.dto.User;
 import edu.java.scrapper.service.LinkService;
 import edu.java.scrapper.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +25,11 @@ public class TrackController {
         @RequestParam("chatId") Long chatId,
         @RequestParam("service") String serviceUrl
     ) {
-        UserDto user = userService.login(chatId);
+        User user = userService.login(chatId);
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
-        linkService.add(user.getId(), serviceUrl);
+        linkService.add(user.getChatId(), serviceUrl);
         return ResponseEntity.ok("Сервис " + serviceUrl + " добавлен в отслеживание");
     }
 
@@ -38,12 +38,13 @@ public class TrackController {
         @RequestParam("chatId") Long chatId,
         @RequestParam("service") String serviceUrl
     ) {
-        UserDto user = userService.login(chatId);
+        User user = userService.login(chatId);
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
-        boolean res = linkService.remove(user.getId(), serviceUrl);
+        boolean res = linkService.remove(user.getChatId(), serviceUrl);
         if (!res) {
+            System.out.println("hehe");
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok("Сервис " + serviceUrl + " больше не отслеживается");
@@ -53,14 +54,14 @@ public class TrackController {
     public ResponseEntity<?> getTracks(
         @RequestParam("chatId") Long chatId
     ) {
-        UserDto user = userService.login(chatId);
+        User user = userService.login(chatId);
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
-        List<LinkDto> tracks = (List<LinkDto>) linkService.listByChatId(user.getId());
+        List<Track> tracks = (List<Track>) linkService.listByChatId(user.getChatId());
         if (tracks.isEmpty()) {
             return ResponseEntity.badRequest().body(new ArrayList<>());
         }
-        return ResponseEntity.ok(tracks.stream().map(LinkDto::getUrl));
+        return ResponseEntity.ok(tracks.stream().map(Track::getUrl));
     }
 }

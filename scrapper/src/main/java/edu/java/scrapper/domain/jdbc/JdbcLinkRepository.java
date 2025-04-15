@@ -1,6 +1,6 @@
-package edu.java.scrapper.domain;
+package edu.java.scrapper.domain.jdbc;
 
-import edu.java.scrapper.dto.LinkDto;
+import edu.java.scrapper.dto.jdbc.JdbcLink;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,8 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 public class JdbcLinkRepository {
     private final JdbcTemplate jdbcTemplate;
-    private final RowMapper<LinkDto> linkRowMapper = (rs, rowNum) ->
-        new LinkDto(
+    private final RowMapper<JdbcLink> linkRowMapper = (rs, rowNum) ->
+        new JdbcLink(
             rs.getLong("id"),
             rs.getString("url"),
             rs.getTimestamp("updated_at"),
@@ -23,26 +23,26 @@ public class JdbcLinkRepository {
 
     private static final int DISTANCE = 60;
 
-    public List<LinkDto> findAll() {
+    public List<JdbcLink> findAll() {
         String query = "select * from links where extract(epoch from (now() - updated_at)) >= ?";
         return jdbcTemplate.query(query, linkRowMapper, DISTANCE);
     }
 
-    public List<LinkDto> findAll(long chatId) {
+    public List<JdbcLink> findAll(long chatId) {
         String query = "select * from links where chat_id = ?";
         return jdbcTemplate.query(query, linkRowMapper, chatId);
     }
 
     @Transactional
-    public LinkDto add(long userId, String url, Timestamp updateAt) {
+    public JdbcLink add(long chatId, String url, Timestamp updateAt) {
         String sql = "insert into links (url, updated_at, chat_id) values (?,?,?) returning *;";
-        return jdbcTemplate.queryForObject(sql, linkRowMapper, url, updateAt, userId);
+        return jdbcTemplate.queryForObject(sql, linkRowMapper, url, updateAt, chatId);
     }
 
     @Transactional
-    public void updateTime(long userId, String url, Timestamp updateAt) {
+    public void updateTime(long chatId, String url, Timestamp updateAt) {
         String sql = "update links set updated_at = ? where chat_id = ? and url = ?";
-        jdbcTemplate.update(sql, updateAt, userId, url);
+        jdbcTemplate.update(sql, updateAt, chatId, url);
     }
 
 
