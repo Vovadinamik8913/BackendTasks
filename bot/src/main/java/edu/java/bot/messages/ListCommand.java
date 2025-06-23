@@ -2,7 +2,7 @@ package edu.java.bot.messages;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.service.ScrapperClient;
+import edu.java.bot.client.ScrapperClient;
 
 public class ListCommand implements Command {
     private final ScrapperClient scrapperClient;

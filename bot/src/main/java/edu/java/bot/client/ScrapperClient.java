@@ -1,4 +1,4 @@
-package edu.java.bot.service;
+package edu.java.bot.client;
 
 import edu.java.bot.configuration.ApplicationConfig;
 import org.springframework.http.HttpEntity;

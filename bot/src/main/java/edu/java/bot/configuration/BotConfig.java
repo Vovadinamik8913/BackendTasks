@@ -10,7 +10,7 @@ import edu.java.bot.messages.TrackCommand;
 import edu.java.bot.messages.UntrackCommand;
 import edu.java.bot.messages.UpdateCommand;
 import edu.java.bot.service.ChatStateHolder;
-import edu.java.bot.service.ScrapperClient;
+import edu.java.bot.client.ScrapperClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import java.util.ArrayList;

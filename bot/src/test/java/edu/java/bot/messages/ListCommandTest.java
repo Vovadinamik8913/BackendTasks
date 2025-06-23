@@ -3,7 +3,7 @@ package edu.java.bot.messages;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
-import edu.java.bot.service.ScrapperClient;
+import edu.java.bot.client.ScrapperClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

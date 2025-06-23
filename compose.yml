@@ -49,7 +49,7 @@ services:
     networks:
       - backend
     environment:
-      BOT_TOKEN: ""
+      BOT_TOKEN: "8040968431:AAG5hYjc2Ba593ockdeNbuRgj9n23K5BtvM"
       SCRAPPER_BASE_URL: "http://scrapper:8080"
 
 
