@@ -1,0 +1,80 @@
+services:
+  postgresql:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: scrapper
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgresql:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  liquibase-migrations:
+    image: liquibase/liquibase:4.25
+    depends_on:
+      - postgresql
+    command:
+      - --changelog-file=master.xml
+      - --driver=org.postgresql.Driver
+      - --url=jdbc:postgresql://postgresql:5432/scrapper
+      - --username=postgres
+      - --password=postgres
+      - update
+    volumes:
+      - ./migrations:/liquibase/changelog
+    networks:
+      - backend
+
+  shared:
+    image: maven:3.9.9
+    volumes:
+      - maven-repo:/root/.m2
+      - .:/usr/src
+    working_dir: /usr/src
+    command: mvn clean install -pl shared -am -DskipTests
+    environment:
+      MAVEN_OPTS: -Dmaven.repo.local=/root/.m2/repository
+
+  bot:
+    build:
+      context: .
+      dockerfile: bot/Dockerfile
+    ports:
+      - "8081:8090"
+    depends_on:
+      - shared
+    networks:
+      - backend
+    environment:
+      BOT_TOKEN: "8040968431:AAG5hYjc2Ba593ockdeNbuRgj9n23K5BtvM"
+      SCRAPPER_BASE_URL: "http://scrapper:8080"
+
+
+  scrapper:
+    build:
+      context: .
+      dockerfile: scrapper/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - shared
+    networks:
+      - backend
+    environment:
+      SCHEDULER_INTERVAL: "10s"
+      BOT_URL: "http://bot:8090"
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_URL: "jdbc:postgresql://postgresql:5432/scrapper"
+
+volumes:
+  postgresql:
+  maven-repo:
+
+networks:
+  backend:
+    driver: bridge
+
